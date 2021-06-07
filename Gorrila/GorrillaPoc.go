@@ -42,6 +42,7 @@ func addEmployee(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while add Employee", 400, nil))
+		return
 	}
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusOK)
@@ -56,11 +57,13 @@ func removeEmployee(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while retrive Id from PathVariable", 400, nil))
+		return
 	}
 	_, err = db.Exec("Delete From employee where id = ?", id)
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while delete Employee", 400, nil))
+		return
 	}
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusOK)
@@ -75,6 +78,7 @@ func updateEmployee(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while retrive Id from PathVariable", 400, nil))
+		return
 	}
 	var e model.Employee
 	json.NewDecoder(request.Body).Decode(&e)
@@ -82,6 +86,7 @@ func updateEmployee(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while Update Employee", 400, nil))
+		return
 	}
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusOK)
@@ -96,6 +101,7 @@ func getAllEmployee(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while Get All Employee Details", 400, nil))
+		return
 	}
 	var employees []model.Employee
 	for result.Next() {
@@ -104,6 +110,7 @@ func getAllEmployee(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			response.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(response).Encode(model.GetResponse("Error while Scan Employee Details", 400, nil))
+			return
 		}
 		employees = append(employees, e)
 	}
@@ -121,11 +128,13 @@ func getAllEmployeeById(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while retrive Id from PathVariable", 400, nil))
+		return
 	}
 	result, err := db.Query("Select * FROM employee where id=?", id)
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(response).Encode(model.GetResponse("Error while Get Employee Details", 400, nil))
+		return
 	}
 	var employees []model.Employee
 	for result.Next() {
@@ -134,6 +143,7 @@ func getAllEmployeeById(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			response.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(response).Encode(model.GetResponse("Error while Scan Employee Details", 400, nil))
+			return
 		}
 		employees = append(employees, e)
 	}
